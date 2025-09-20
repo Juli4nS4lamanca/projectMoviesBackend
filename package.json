@@ -1,0 +1,24 @@
+{
+  "name": "peliculas_backend",
+  "version": "1.0.0",
+  "description": "Ejercicio aplicacion web de peliculas Universidad Digital de Antioquia",
+  "main": "index.js",
+  "scripts": {
+    "start": "NODE_ENV=production node index.js",
+    "dev": "NODE_ENV=development nodemon index.js",
+    "test": "NODE_ENV=test node --test"
+  },
+  "author": "Julian Salamanca Borja",
+  "license": "ISC",
+  "type": "module",
+  "dependencies": {
+    "dotenv": "^17.2.1",
+    "express": "^5.1.0",
+    "express-validator": "^7.2.1",
+    "mongoose": "^8.17.2"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.10",
+    "supertest": "^7.1.4"
+  }
+}
