@@ -8,8 +8,10 @@ import directorsRouter from './controllers/directorController.js';
 import genresRouter from './controllers/genreController.js';
 import producersRouter from './controllers/producerController.js';
 import mediasRouter from './controllers/mediaController.js';
+import cors from 'cors';
 
 const app = express();
+app.use(cors());
 
 connectMongoDB();
 
