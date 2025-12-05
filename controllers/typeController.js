@@ -1,6 +1,8 @@
 import express from 'express';
 import Type from '../models/Type.js';
 import { validationResult, check } from "express-validator";
+import auth from '../middleware/authMiddleware.js';
+import authRole from '../middleware/roleMiddleware.js';
 
 const typesRouter = express.Router();
 
@@ -11,7 +13,9 @@ typesRouter.get('/', async (request, response) => {
 
 typesRouter.post('/',
   [check('name', 'Name is required').not().isEmpty(),
-  check('description', 'Description is required').not().isEmpty()],
+  check('description', 'Description is required').not().isEmpty(),
+    auth,
+  authRole(['administrador'])],
   async (request, response, next) => {
 
     const errors = validationResult(request);
@@ -20,7 +24,6 @@ typesRouter.post('/',
     };
 
     const { name, description } = request.body;
-
     const type = new Type({
       name,
       description
@@ -34,14 +37,16 @@ typesRouter.post('/',
     };
   });
 
-typesRouter.delete('/:id', async (request, response) => {
+typesRouter.delete('/:id', [auth, authRole(['administrador'])], async (request, response) => {
   await Type.findByIdAndDelete(request.params.id);
   response.status(204).end();
 });
 
 typesRouter.put('/:id',
   [check('name', 'Name is required').not().isEmpty(),
-  check('description', 'Description is required').not().isEmpty()],
+  check('description', 'Description is required').not().isEmpty(),
+    auth,
+  authRole(['administrador'])],
   async (request, response, next) => {
 
     const errors = validationResult(request);
@@ -52,8 +57,8 @@ typesRouter.put('/:id',
     const { name, description } = request.body;
 
     const type = {
-      name,
-      description
+      name: name,
+      description: description
     };
 
     try {

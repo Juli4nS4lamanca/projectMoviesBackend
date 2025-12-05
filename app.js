@@ -8,6 +8,8 @@ import directorsRouter from './controllers/directorController.js';
 import genresRouter from './controllers/genreController.js';
 import producersRouter from './controllers/producerController.js';
 import mediasRouter from './controllers/mediaController.js';
+import userRouter from './controllers/userController.js';
+import loginRouter from './controllers/loginController.js';
 import cors from 'cors';
 
 const app = express();
@@ -23,6 +25,8 @@ app.use('/api/directors', directorsRouter);
 app.use('/api/genres', genresRouter);
 app.use('/api/producers', producersRouter);
 app.use('/api/medias', mediasRouter);
+app.use('/api/users', userRouter);
+app.use('/api/login', loginRouter);
 
 app.use(unknownEndpoint);
 app.use(errorHandler);
