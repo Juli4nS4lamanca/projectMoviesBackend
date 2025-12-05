@@ -12,6 +12,8 @@ userRouter.post('/',
   check('name', 'Name is required').not().isEmpty(),
   check('rol', 'Rol is required').not().isEmpty(),
   check('password', 'Password is required').not().isEmpty(),
+    auth,
+  authRole(["administrador"])
   ],
   async (request, response, next) => {
 
