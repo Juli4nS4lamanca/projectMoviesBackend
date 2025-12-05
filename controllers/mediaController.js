@@ -5,6 +5,8 @@ import Director from '../models/Director.js';
 import Producer from '../models/Producer.js';
 import Genre from '../models/Genre.js';
 import Type from '../models/Type.js';
+import auth from '../middleware/authMiddleware.js';
+import authRole from '../middleware/roleMiddleware.js';
 
 const mediasRouter = express.Router();
 
@@ -31,7 +33,9 @@ mediasRouter.post('/',
   check('directorId', 'Invalid Director ID').isMongoId(),
   check('producerId', 'Invalid Producer ID').isMongoId(),
   check('genreId', 'Invalid Genre ID').isMongoId(),
-  check('typeId', 'Invalid Type ID').isMongoId()],
+  check('typeId', 'Invalid Type ID').isMongoId(),
+    auth,
+  authRole(["docente", "administrador"])],
   async (request, response, next) => {
 
     const errors = validationResult(request);
@@ -84,7 +88,7 @@ mediasRouter.post('/',
     };
   });
 
-mediasRouter.delete('/:id', async (request, response) => {
+mediasRouter.delete('/:id', [auth, authRole(["docente", "administrador"])], async (request, response) => {
   await Media.findByIdAndDelete(request.params.id);
   response.status(204).end();
 });
@@ -98,7 +102,9 @@ mediasRouter.put('/:id',
   check('directorId', 'Invalid Director ID').isMongoId(),
   check('producerId', 'Invalid Producer ID').isMongoId(),
   check('genreId', 'Invalid Genre ID').isMongoId(),
-  check('typeId', 'Invalid Type ID').isMongoId()],
+  check('typeId', 'Invalid Type ID').isMongoId(),
+    auth,
+  authRole(["docente", "administrador"])],
   async (request, response) => {
 
     const errors = validationResult(request);

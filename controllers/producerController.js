@@ -1,6 +1,8 @@
 import express from "express";
 import Producer from '../models/Producer.js';
 import { validationResult, check } from "express-validator";
+import auth from "../middleware/authMiddleware.js";
+import authRole from "../middleware/roleMiddleware.js";
 
 const producersRouter = express.Router();
 
@@ -17,7 +19,9 @@ producersRouter.get('/actives', async (request, response) => {
 producersRouter.post('/',
   [check('name', 'Name is required').not().isEmpty(),
   check('description', 'Description is required').not().isEmpty(),
-  check('slogan', 'Slogan is required').not().isEmpty()],
+  check('slogan', 'Slogan is required').not().isEmpty(),
+    auth,
+  authRole(["administrador"])],
   async (request, response, next) => {
 
     const errors = validationResult(request);
@@ -42,7 +46,7 @@ producersRouter.post('/',
     };
   });
 
-producersRouter.delete('/:id', async (request, response) => {
+producersRouter.delete('/:id', [auth, authRole(["administrador"])], async (request, response) => {
   await Producer.findByIdAndDelete(request.params.id);
   response.status(204).end();
 });
@@ -50,7 +54,9 @@ producersRouter.delete('/:id', async (request, response) => {
 producersRouter.put('/',
   [check('name', 'Name is required').not().isEmpty(),
   check('description', 'Description is required').not().isEmpty(),
-  check('slogan', 'Slogan is required').not().isEmpty()],
+  check('slogan', 'Slogan is required').not().isEmpty(),
+    auth,
+  authRole(["administrador"])],
   async (request, response, next) => {
 
     const errors = validationResult(request);

@@ -1,6 +1,8 @@
 import express from "express";
 import Director from "../models/Director.js";
 import { validationResult, check } from "express-validator";
+import auth from "../middleware/authMiddleware.js";
+import authRole from "../middleware/roleMiddleware.js";
 
 const directorsRouter = express.Router();
 
@@ -15,7 +17,9 @@ directorsRouter.get('/actives', async (request, response) => {
 });
 
 directorsRouter.post('/',
-  [check('name', 'Name is required').not().isEmpty()],
+  [check('name', 'Name is required').not().isEmpty(),
+    auth,
+  authRole(['administrador'])],
   async (request, response, next) => {
 
     const errors = validationResult(request);
@@ -38,13 +42,17 @@ directorsRouter.post('/',
     };
   });
 
-directorsRouter.delete('/:id', async (request, response) => {
-  await Director.findByIdAndDelete(request.params.id);
-  response.status(204).end();
-});
+directorsRouter.delete('/:id',
+  [auth, authRole(["administrador"])],
+  async (request, response) => {
+    await Director.findByIdAndDelete(request.params.id);
+    response.status(204).end();
+  });
 
 directorsRouter.put('/:id',
-  [check('name', 'Name is required').not().isEmpty()],
+  [check('name', 'Name is required').not().isEmpty(),
+    auth,
+  authRole("administrador")],
   async (request, response, next) => {
 
     const errors = validationResult(request);

@@ -1,6 +1,8 @@
 import express from "express";
 import Genre from "../models/Genre.js";
 import { validationResult, check } from "express-validator";
+import auth from "../middleware/authMiddleware.js";
+import authRole from "../middleware/roleMiddleware.js";
 
 const genresRouter = express.Router();
 
@@ -16,7 +18,9 @@ genresRouter.get('/actives', async (request, response) => {
 
 genresRouter.post('/',
   [check('name', 'Name is required').not().isEmpty(),
-  check('description', 'Description is required').not().isEmpty()],
+  check('description', 'Description is required').not().isEmpty(),
+    auth,
+  authRole(["administrador"])],
   async (request, response, next) => {
 
     const errors = validationResult(request);
@@ -40,14 +44,16 @@ genresRouter.post('/',
     };
   });
 
-genresRouter.delete('/:id', async (request, response) => {
+genresRouter.delete('/:id', [auth, authRole(["administrador"])], async (request, response) => {
   await Genre.findByIdAndDelete(request.params.id);
   response.status(204).end();
 });
 
 genresRouter.put('/:id',
   [check('name', 'Name is required').not().isEmpty(),
-  check('description', 'Description is required').not().isEmpty()],
+  check('description', 'Description is required').not().isEmpty(),
+    auth,
+  authRole(["administrador"])],
   async (request, response, next) => {
 
     const errors = validationResult(request);
